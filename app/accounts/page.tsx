@@ -35,10 +35,10 @@ export default function Accounts() {
     if (session?.user && accounts.length === 0) {
       getAccounts(session.user);
     }
-  }, [session?.user]);
+  }, [session?.user, accounts.length]);
 
   return (
-    <div className="grid gap-4">
+    <div className="grid gap-8">
       <div className="flex items-center justify-between gap-3">
         <div className="flex flex-col grow-1 justify-center">
           <h1 className="text-3xl font-bold text-foreground-secondary">
@@ -58,6 +58,32 @@ export default function Accounts() {
             <Icon.add.circle.outline />
             <span className="ms-1">Link bank account</span>
           </Button>
+        </div>
+      </div>
+
+      <div className="space-y-1 -mb-4">
+        <div className="flex items-center gap-1">
+          <span className="text-sm text-muted-foreground">
+            Total account balance ({accounts.length + 1} account
+            {accounts.length !== 1 ? "s" : ""})
+          </span>
+
+          <Icon.info.circle.outline />
+        </div>
+
+        <div>
+          <div className="inline-flex text-2xl font-semibold border border-border rounded-md p-3">
+            {Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "GBP", // Hardcoding this, skipping the currency selector dropdown
+            }).format(
+              accounts.reduce(
+                (acc, curr) =>
+                  acc + (curr.currentBalance || curr.availableBalance || 0),
+                0
+              )
+            )}
+          </div>
         </div>
       </div>
 
