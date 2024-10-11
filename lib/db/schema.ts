@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+  doublePrecision,
   integer,
   pgEnum,
   pgTable,
@@ -67,13 +68,15 @@ export const accounts = pgTable("accounts", {
   plaidSubType: varchar("plaid_sub_type"),
   plaidOfficialName: varchar("plaid_official_name"),
 
-  availableBalance: integer("available_balance"),
-  currentBalance: integer("current_balance"),
+  availableBalance: doublePrecision("available_balance"),
+  currentBalance: doublePrecision("current_balance"),
 
   isoCurrencyCode: varchar("iso_currency_code"),
   unofficialCurrencyCodes: varchar("unofficial_currency_codes"),
 
-  lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
+  lastSyncedAt: timestamp("last_synced_at", {
+    withTimezone: true,
+  }).defaultNow(),
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
