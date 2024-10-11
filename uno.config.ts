@@ -31,4 +31,7 @@ export default defineConfig({
       border: "hsl(var(--border))",
     },
   },
+  shortcuts: {
+    card: "bg-background-secondary text-foreground-secondary border border-border rounded-lg p-4",
+  },
 });
