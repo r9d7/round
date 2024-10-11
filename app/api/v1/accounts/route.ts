@@ -40,7 +40,7 @@ export async function POST(request: Request) {
 
           lastSyncedAt: account.balances.last_updated_datetime
             ? parseISO(account.balances.last_updated_datetime)
-            : null,
+            : new Date(),
         }))
     )
     .returning();
@@ -62,5 +62,5 @@ export async function GET(request: Request) {
     with: { accounts: true },
   });
 
-  return Response.json(matchingLinkedItems);
+  return Response.json(matchingLinkedItems.map((i) => i.accounts).flat());
 }
