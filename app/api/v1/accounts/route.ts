@@ -1,4 +1,5 @@
 import { parseISO } from "date-fns/parseISO";
+import { eq } from "drizzle-orm";
 import { AccountBase } from "plaid";
 
 import { dbClient } from "~/lib/db";
@@ -45,4 +46,21 @@ export async function POST(request: Request) {
     .returning();
 
   return Response.json({ accounts: newAccounts });
+}
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const userId = searchParams.get("user_id");
+
+  // TODO: Handle missing param
+  if (!userId) {
+    return;
+  }
+
+  const matchingLinkedItems = await dbClient.query.linkedItems.findMany({
+    where: eq(linkedItems.userId, userId),
+    with: { accounts: true },
+  });
+
+  return Response.json(matchingLinkedItems);
 }
