@@ -3,8 +3,8 @@ import postgres from "postgres";
 
 import * as schema from "~/lib/db/schema";
 
-import dbConfig from "~/config/db";
-import { env } from "~/config/env";
+import dbConfig from "~/drizzle.config";
+import { env } from "~/env";
 
 declare global {
   var database: PostgresJsDatabase<typeof schema> | undefined;
