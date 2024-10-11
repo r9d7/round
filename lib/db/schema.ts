@@ -41,7 +41,7 @@ export const linkedItems = pgTable("linked_items", {
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const linkedItemsRelations = relations(linkedItems, ({ one, many }) => ({
+export const linkedItemsRelations = relations(linkedItems, ({ many }) => ({
   // author: one(users, {
   //   fields: [linkedItems.userId],
   //   references: [users.id],
