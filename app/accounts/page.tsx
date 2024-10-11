@@ -61,30 +61,43 @@ export default function Accounts() {
         </div>
       </div>
 
-      <div className="space-y-1 -mb-4">
-        <div className="flex items-center gap-1">
-          <span className="text-sm text-muted-foreground">
-            Total account balance ({accounts.length + 1} account
-            {accounts.length !== 1 ? "s" : ""})
-          </span>
+      <div className="flex items-center justify-between -mb-4">
+        <div className="space-y-1">
+          <div className="flex items-center gap-1">
+            <span className="text-sm text-muted-foreground">
+              Total account balance ({accounts.length + 1} account
+              {accounts.length !== 1 ? "s" : ""})
+            </span>
 
-          <Icon.info.circle.outline />
-        </div>
-
-        <div>
-          <div className="inline-flex text-2xl font-semibold border border-border rounded-md p-3">
-            {Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "GBP", // Hardcoding this, skipping the currency selector dropdown
-            }).format(
-              accounts.reduce(
-                (acc, curr) =>
-                  acc + (curr.currentBalance || curr.availableBalance || 0),
-                0
-              )
-            )}
+            <Icon.info.circle.outline />
+          </div>
+          <div>
+            <div className="inline-flex text-2xl font-semibold border border-border rounded-md p-3">
+              {Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "GBP", // Hardcoding this, skipping the currency selector dropdown
+              }).format(
+                accounts.reduce(
+                  (acc, curr) =>
+                    acc + (curr.currentBalance || curr.availableBalance || 0),
+                  0
+                )
+              )}
+            </div>
           </div>
         </div>
+
+        {/* Adding for layout only, skipping the slider for now */}
+        {accounts.length > 3 && (
+          <div className="space-x-2">
+            <Button variant="outline" size="icon">
+              <Icon.arrow.alt.left.outline />
+            </Button>
+            <Button variant="outline" size="icon">
+              <Icon.arrow.alt.right.outline />
+            </Button>
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-4">

@@ -22,15 +22,12 @@ export const Icon = {
   info: { circle: { outline: SolarInfoCircleOutline } },
 
   arrow: {
+    up: { outline: SolarArrowRightUpOutline },
+    down: { outline: SolarArrowLeftDownOutline },
+
     alt: {
-      left: {
-        outline: SolarAltArrowLeftOutline,
-        down: { outline: SolarArrowLeftDownOutline },
-      },
-      rigth: {
-        outline: SolarAltArrowRightOutline,
-        up: { outline: SolarArrowRightUpOutline },
-      },
+      left: { outline: SolarAltArrowLeftOutline },
+      right: { outline: SolarAltArrowRightOutline },
     },
   },
   refresh: { outline: SolarRefreshOutline },
