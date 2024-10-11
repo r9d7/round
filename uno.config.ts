@@ -15,4 +15,20 @@ export default defineConfig({
     }),
   ],
   transformers: [transformerVariantGroup(), transformerDirectives()],
+  theme: {
+    colors: {
+      background: {
+        DEFAULT: "hsl(var(--background))",
+        secondary: "hsl(var(--background-secondary))",
+      },
+      foreground: {
+        DEFAULT: "hsl(var(--foreground))",
+        secondary: "hsl(var(--foreground-secondary))",
+      },
+
+      "muted-foreground": "hsl(var(--muted-foreground))",
+
+      border: "hsl(var(--border))",
+    },
+  },
 });
