@@ -52,8 +52,8 @@ export const linkedItemsRelations = relations(linkedItems, ({ many }) => ({
 export const accounts = pgTable("accounts", {
   id: serial("id").primaryKey(),
 
-  // userId: Might be useful to store the userId here too
-  // but I'm skipping as it can be joined from the `linkedItems` table
+  // FK for the one-to-many relation for users->accounts
+  userId: varchar("user_id").notNull(),
   linkedItemId: integer("linked_item_id").notNull(),
 
   name: varchar("name").notNull(),
@@ -76,14 +76,49 @@ export const accounts = pgTable("accounts", {
 
   lastSyncedAt: timestamp("last_synced_at", {
     withTimezone: true,
-  }).defaultNow(),
+  })
+    .notNull()
+    .defaultNow(),
 
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 
-export const accountsRelations = relations(accounts, ({ one }) => ({
+export const accountsRelations = relations(accounts, ({ one, many }) => ({
   linkedItem: one(linkedItems, {
     fields: [accounts.linkedItemId],
     references: [linkedItems.id],
+  }),
+  transactions: many(transactions),
+}));
+
+export const transactions = pgTable("transactions", {
+  id: serial("id").primaryKey(),
+
+  // FK for the one-to-many relation for users->transactions
+  userId: varchar("user_id").notNull(),
+  accountId: integer("account_id").notNull(),
+
+  plaidTransactionId: varchar("plaid_transaction_id").unique().notNull(),
+
+  amount: doublePrecision("amount"),
+  checkNumber: varchar("check_number"),
+
+  isoCurrencyCode: varchar("iso_currency_code"),
+  unofficialCurrencyCodes: varchar("unofficial_currency_codes"),
+
+  transactionCode: varchar("transaction_code"),
+  merchantName: varchar("merchant_name"),
+
+  // Plaid transaction timestamp
+  dateTime: timestamp("date_time", { withTimezone: true }),
+
+  createdAt: timestamp("created_at").notNull().defaultNow(),
+  updatedAt: timestamp("updated_at"),
+});
+
+export const transactionsRelations = relations(transactions, ({ one }) => ({
+  account: one(accounts, {
+    fields: [transactions.accountId],
+    references: [accounts.id],
   }),
 }));

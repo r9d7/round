@@ -12,6 +12,17 @@ export async function POST(request: Request) {
       accounts: AccountBase[];
     };
 
+  const matchingLinkedItem = await dbClient.query.linkedItems.findFirst({
+    where: eq(linkedItems.id, linkedItemId),
+  });
+
+  if (!matchingLinkedItem) {
+    return Response.json(
+      { error: `Item with ID ${linkedItemId} not found` },
+      { status: 404 }
+    );
+  }
+
   const newAccounts = await dbClient
     .insert(accounts)
     .values(
@@ -22,6 +33,7 @@ export async function POST(request: Request) {
           (account) => account.balances.available || account.balances.current
         )
         .map((account) => ({
+          userId: matchingLinkedItem.userId,
           linkedItemId,
 
           name: account.name,
@@ -52,9 +64,8 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const userId = searchParams.get("user_id");
 
-  // TODO: Handle missing param
   if (!userId) {
-    return;
+    return Response.json({ error: "User ID is required" }, { status: 400 });
   }
 
   const matchingLinkedItems = await dbClient.query.linkedItems.findMany({
