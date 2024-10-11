@@ -3,7 +3,7 @@ import { createEnv } from "@t3-oss/env-nextjs";
 
 export const env = createEnv({
   server: {
-    NODE_ENV: z.union([z.literal("production"), z.literal("development")]),
+    NODE_ENV: z.union([z.literal("development"), z.literal("production")]),
 
     // DB Config
     POSTGRES_USER: z.string(),
@@ -11,9 +11,12 @@ export const env = createEnv({
     POSTGRES_DB: z.string(),
 
     DATABASE_HOST: z.string(),
-    DATABASE_PORT: z.number(),
-
-    DATABASE_URL: z.string().url(),
+    DATABASE_PORT: z
+      .string()
+      .min(4)
+      .max(4)
+      .transform((v) => parseInt(v, 10))
+      .pipe(z.number()),
 
     // Plaid Config
     PLAID_CLIENT_ID: z.string(),
@@ -35,8 +38,6 @@ export const env = createEnv({
 
     DATABASE_HOST: process.env.DATABASE_HOST,
     DATABASE_PORT: process.env.DATABASE_PORT,
-
-    DATABASE_URL: process.env.DATABASE_URL,
 
     // Plaid Config
     PLAID_CLIENT_ID: process.env.PLAID_CLIENT_ID,
