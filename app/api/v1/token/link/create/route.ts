@@ -10,15 +10,13 @@ export async function POST(request: Request) {
     user: ReturnType<typeof getSession>["user"];
   };
 
-  const tokenParams = {
+  const response = await plaidClient.linkTokenCreate({
     user: { client_user_id: user.id },
     client_name: "Round Finance App",
     products: env.PLAID_PRODUCTS.split(",") as Products[],
     language: "en",
     country_codes: env.PLAID_COUNTRY_CODES.split(",") as CountryCode[],
-  };
-
-  const response = await plaidClient.linkTokenCreate(tokenParams);
+  });
 
   return Response.json({ linkToken: response.data.link_token });
 }
