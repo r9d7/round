@@ -25,6 +25,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@iconify/json": "^2.2.258",
+    "@svgr/core": "^8.1.0",
+    "@svgr/plugin-jsx": "^8.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
@@ -33,6 +36,7 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.15",
     "typescript": "^5",
-    "unocss": "^0.63.4"
+    "unocss": "^0.63.4",
+    "unplugin-icons": "^0.19.3"
   }
 }
