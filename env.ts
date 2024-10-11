@@ -27,7 +27,9 @@ export const env = createEnv({
     PLAID_PRODUCTS: z.string(),
     PLAID_COUNTRY_CODES: z.string(),
   },
-  client: {},
+  client: {
+    NEXT_PUBLIC_URL: z.string(),
+  },
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
 
@@ -47,5 +49,7 @@ export const env = createEnv({
 
     PLAID_PRODUCTS: process.env.PLAID_PRODUCTS,
     PLAID_COUNTRY_CODES: process.env.PLAID_COUNTRY_CODES,
+
+    NEXT_PUBLIC_URL: process.env.NEXT_PUBLIC_URL,
   },
 });
