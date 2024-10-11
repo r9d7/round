@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 import { Icon } from "~/components/ui/icon";
 
 import { getSession } from "~/lib/session";
@@ -65,9 +66,11 @@ export default function RootLayout({
                   className="flex items-center justify-center px-4 py-3 font-medium rounded-lg hover:bg-black/10"
                 >
                   <span className="font-medium">{session.user.name}</span>
-                  <div className="w-10 h-10 bg-[#533b2f] rounded-full text-white font-medium ms-3 flex items-center justify-center">
-                    JD
-                  </div>
+                  <Avatar className="ms-3">
+                    <AvatarFallback className="bg-[#533b2f] text-white">
+                      JD
+                    </AvatarFallback>
+                  </Avatar>
                 </Link>
               )}
 
