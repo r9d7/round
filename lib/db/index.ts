@@ -6,10 +6,10 @@ import * as schema from "~/lib/db/schema";
 import { env } from "~/env";
 
 declare global {
-  var database: PostgresJsDatabase<typeof schema> | undefined;
+  var dbClient: PostgresJsDatabase<typeof schema> | undefined;
 }
 
-let database: PostgresJsDatabase<typeof schema>;
+let dbClient: PostgresJsDatabase<typeof schema>;
 let queryClient: ReturnType<typeof postgres>;
 
 const pgConnConfig = {
@@ -23,13 +23,13 @@ const pgConnConfig = {
 
 if (env.NODE_ENV === "production") {
   queryClient = postgres(pgConnConfig);
-  database = drizzle(queryClient, { schema });
+  dbClient = drizzle(queryClient, { schema });
 } else {
-  if (!global.database) {
+  if (!global.dbClient) {
     queryClient = postgres(pgConnConfig);
-    global.database = drizzle(queryClient, { schema });
+    global.dbClient = drizzle(queryClient, { schema });
   }
-  database = global.database;
+  dbClient = global.dbClient;
 }
 
-export { database, queryClient as pg };
+export { dbClient, queryClient as pg };
