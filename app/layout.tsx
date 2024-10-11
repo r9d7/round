@@ -1,4 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+
+import { Icon } from "~/components/ui/icon";
+
+import { getSession } from "~/lib/session";
 
 import "~/app/globals.css";
 
@@ -10,9 +15,74 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = getSession();
+
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-background text-foreground">
+        <aside className="fixed top-0 left-0 z-40 w-64 h-screen translate-x-0">
+          <div className="h-full px-3 py-4 overflow-y-auto bg-background-secondary border-r border-border">
+            <Link href="/" className="flex items-center ps-2.5 mb-5">
+              <span className="text-2xl font-semibold whitespace-nowrap">
+                Round
+              </span>
+            </Link>
+
+            <ul className="space-y-2 font-medium">
+              {[
+                {
+                  displayText: "Home",
+                  href: "/",
+                  icon: Icon.home.smile.outline,
+                },
+                {
+                  displayText: "Accounts",
+                  href: "/accounts",
+                  icon: Icon.suitcase.outline,
+                },
+                {
+                  displayText: "Portfolio",
+                  href: "/portfolio",
+                  icon: Icon.graph.up.outline,
+                },
+              ].map(({ displayText, href, icon: Icon }) => (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    className="flex items-center px-4 py-3 font-medium rounded-lg hover:bg-black/10"
+                  >
+                    <Icon className="text-lg" />
+                    <span className="ms-3">{displayText}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+
+            <div className="absolute bottom-0 left-0 p-4 space-x-4 w-full z-20 space-y-3">
+              {session.user && (
+                <Link
+                  href="/"
+                  className="flex items-center justify-center px-4 py-3 font-medium rounded-lg hover:bg-black/10"
+                >
+                  <span className="font-medium">{session.user.name}</span>
+                  <div className="w-10 h-10 bg-[#533b2f] rounded-full text-white font-medium ms-3 flex items-center justify-center">
+                    JD
+                  </div>
+                </Link>
+              )}
+
+              <footer className="text-muted-foreground text-center text-xs">
+                <p>&copy; 2024</p>
+                <p>Round Technologies Limited</p>
+              </footer>
+            </div>
+          </div>
+        </aside>
+
+        <div className="p-8 sm:ml-64">
+          <div className="container mx-auto">{children}</div>
+        </div>
+      </body>
     </html>
   );
 }
