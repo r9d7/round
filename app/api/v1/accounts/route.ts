@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     )
     .returning();
 
-  return Response.json({ accounts: newAccounts });
+  return Response.json(newAccounts);
 }
 
 export async function GET(request: Request) {

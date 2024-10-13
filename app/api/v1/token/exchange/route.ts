@@ -1,8 +1,7 @@
-import { plaidClient } from "~/lib/plaid";
-import { getSession } from "~/lib/session";
-
 import { dbClient } from "~/lib/db";
 import { linkedItems } from "~/lib/db/schema";
+import { plaidClient } from "~/lib/plaid";
+import { getSession } from "~/lib/session";
 
 import { env } from "~/env";
 
@@ -35,6 +34,12 @@ export async function POST(request: Request) {
       linkedItemId: newLinkedItem.id,
       accounts: plaidAccountsResponse.data.accounts,
     }),
+  });
+
+  // Trigger initial transactions sync
+  await fetch(`${env.NEXT_PUBLIC_URL}/api/v1/transactions/sync`, {
+    method: "POST",
+    body: JSON.stringify({ userId: user.id }),
   });
 
   return Response.json(null, { status: 200 });
