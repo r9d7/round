@@ -28,12 +28,17 @@
 
 ## If this were a real app
 
-Besides the usual auth, rate limiting & security stuff:
+Besides the usual auth (MFA & RBAC), rate limiting & security stuff:
 
 - The integration with Plaid needs to be rock-solid & tested
 - Besides the usual unit & integration tests, the crucial flows should be end-to-end tested thoroughly to have full confidence. If any of the current flows fail there should be a way to retrigger them manually
 - For this demo the transaction sync & the stats calculation cron are synchronous and blocking. In a real app it would make sense to move them to an async queue, while also having a system in place to keep track of the running jobs so we could provide the user with granular information about specific transactions/accounts/stats being re-synced/calculated
+- DB replication & caching would be useful if the app is under lots of trafic
 - As already mentioned, pagination & filtering for the transactions would be a useful feature to add
+- I'd recalculate stats after each sync
 - The UI is not responsive so it'd be a nice thing to add
+- I skipped over a lot of database optimisations. It could be useful to add some indexes on id's provided from Plaid
+- Sensitive data like the plaid access token would need to be encrypted
+- Since this is a financial app there needs to be a robust monitoring and alerting system to quickly identify and fix issues (and backups for disaster recovery)
 
 // ON NEW ACC TRIGGER STAT RECALC
