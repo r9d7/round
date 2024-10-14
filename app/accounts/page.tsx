@@ -1,6 +1,6 @@
 "use client";
 
-import { differenceInDays } from "date-fns";
+import { differenceInDays, format } from "date-fns";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Icon } from "~/components/ui/icon";
@@ -8,7 +8,10 @@ import { Icon } from "~/components/ui/icon";
 import { usePlaidLink } from "~/hooks/usePlaidLink";
 import { useSession } from "~/hooks/useSession";
 
-import { accounts as accountsTable } from "~/lib/db/schema";
+import {
+  accounts as accountsTable,
+  transactions as transactionsTable,
+} from "~/lib/db/schema";
 import { getSession } from "~/lib/session";
 import { cn, getAccountBalance } from "~/lib/utils/common";
 
@@ -21,7 +24,11 @@ export default function Accounts() {
     (typeof accountsTable.$inferSelect)[]
   >([]);
   const [stats, setStats] = useState(null);
-  const [transactions, setTransactions] = useState([]);
+  const [transactions, setTransactions] = useState<
+    (typeof transactionsTable.$inferSelect & {
+      account: Pick<typeof accountsTable.$inferSelect, "name" | "mask">;
+    })[]
+  >([]);
 
   useEffect(() => {
     async function getAccounts(user: ReturnType<typeof getSession>["user"]) {
@@ -32,10 +39,25 @@ export default function Accounts() {
       setAccounts(data);
     }
 
-    if (session?.user && accounts.length === 0) {
-      getAccounts(session.user);
+    async function getTransactions(
+      user: ReturnType<typeof getSession>["user"]
+    ) {
+      const response = await fetch(`/api/v1/transactions?user_id=${user.id}`);
+
+      const data = await response.json();
+
+      setTransactions(data);
     }
-  }, [session?.user, accounts.length]);
+
+    if (session?.user) {
+      if (accounts.length === 0) {
+        getAccounts(session.user);
+      }
+      if (transactions.length === 0) {
+        getTransactions(session.user);
+      }
+    }
+  }, [session?.user, accounts.length, transactions.length]);
 
   return (
     <div className="grid gap-8">
@@ -173,7 +195,77 @@ export default function Accounts() {
             To/From
           </Button>
         </div>
-        <p className="text-2xl">Transactions table</p>
+
+        <table className="w-full text-left">
+          <thead className="font-semibold">
+            <tr>
+              <th scope="col" className="px-6 py-3">
+                Date
+              </th>
+              <th scope="col" className="px-6 py-3">
+                To/From
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Amount
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Payment Method
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Bank
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Account
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {transactions.map((transaction) => (
+              <tr key={transaction.id}>
+                <th
+                  scope="row"
+                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                >
+                  {/* Defaulting to transaction.createdAt since transaction.dateTime doesn't seem to be returned for the sandbox transactions on Plaid but this is incorrect */}
+                  {format(
+                    transaction.dateTime || transaction.createdAt,
+                    "dd MMM yyyy, kk:mm aa"
+                  )}
+                </th>
+                <td className="px-6 py-4">{transaction.merchantName || "-"}</td>
+                <td className="px-6 py-4">
+                  {transaction.amount
+                    ? Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "GBP",
+                      }).format(transaction.amount)
+                    : "-"}
+                </td>
+                <td className="px-6 py-4">
+                  {transaction.checkNumber ? (
+                    <>
+                      <Icon.card.outline className="inline-flex" /> Cheque
+                    </>
+                  ) : (
+                    // Assume it's a transaction otherwise
+                    <>
+                      {(transaction.amount || 0) > 0 ? (
+                        <Icon.arrow.up.outline className="inline-flex" />
+                      ) : (
+                        <Icon.arrow.down.outline className="inline-flex" />
+                      )}{" "}
+                      Transaction
+                    </>
+                  )}
+                </td>
+                <td className="px-6 py-4">-</td>
+                <td className="px-6 py-4">
+                  {transaction.account.name} (**{transaction.account.mask})
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

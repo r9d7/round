@@ -34,6 +34,7 @@ export async function GET(request: Request) {
 
     const matchingTransactions = await dbClient.query.transactions.findMany({
       where: eq(transactions.userId, userId),
+      with: { account: { columns: { name: true, mask: true } } },
       orderBy: [desc(transactions.dateTime)],
       limit: 25,
     });

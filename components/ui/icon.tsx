@@ -32,5 +32,5 @@ export const Icon = {
   },
   refresh: { outline: SolarRefreshOutline },
   menu: { dots: { bold: SolarMenuDotsBold } },
-  card: { 2: { outline: SolarCard2Outline } },
+  card: { outline: SolarCard2Outline },
 };
