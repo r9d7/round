@@ -13,21 +13,20 @@ export function usePlaidLink() {
 
   const onSuccess = useCallback<PlaidLinkOnSuccess>(
     async (publicToken) => {
-      // TODO: Add comment abt short circuiting here
+      // Assuming an actual auth implementations is in place, this check wouldn't be necessary here
       if (!session?.user) {
         return;
       }
 
-      const response = await fetch("/api/v1/token/exchange", {
+      // onSuccess/onError needs to be handled in a real app
+      await fetch("/api/v1/token/exchange", {
         method: "POST",
         body: JSON.stringify({ publicToken, user: session.user }),
       });
-      const data = await response.json();
-
-      console.log(">>>", data); // TODO: REMEMBER TO REMOVE
     },
     [session?.user]
   );
 
+  // Need to handle `onError` in a production/real app
   return useReactPlaidLink({ token, onSuccess });
 }
