@@ -156,5 +156,29 @@ export default function Accounts() {
           <span className="text-sm">Click to link another bank account</span>
         </div>
       </div>
+
+      {/* TODO */}
+      <div className="grid grid-cols-3 gap-4 mb-4">
+        <div className="card">runway & cash zero</div>
+        <div className="card">monthly spend</div>
+        <div className="card">monthly income</div>
+      </div>
+
+      <div className="card space-y-2">
+        <h3 className="text-lg font-semibold">Recent Transactions</h3>
+        <div className="flex gap-2">
+          <Button variant="outline" disabled>
+            Date
+          </Button>
+          <Button variant="outline" disabled>
+            Account
+          </Button>
+          <Button variant="outline" disabled>
+            To/From
+          </Button>
+        </div>
+        <p className="text-2xl">Transactions table</p>
+      </div>
+    </div>
   );
 }
