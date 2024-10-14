@@ -6,6 +6,7 @@ import {
   pgTable,
   serial,
   timestamp,
+  unique,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -26,6 +27,7 @@ export var accountTypeEnum = pgEnum("account_type_enum", enum2pg(AccountType));
 
 // export const usersRelations = relations(users, ({ many }) => ({
 //   linkedItems: many(linkedItems),
+//   stats: many(stats),
 // }));
 
 export const linkedItems = pgTable("linked_items", {
@@ -122,3 +124,34 @@ export const transactionsRelations = relations(transactions, ({ one }) => ({
     references: [accounts.id],
   }),
 }));
+
+export const stats = pgTable(
+  "stats",
+  {
+    id: serial("id").primaryKey(),
+
+    // This would be the FK for the one-to-many relation for users->stats
+    userId: varchar("user_id").notNull(),
+
+    monthlyIn: doublePrecision("monthly_in").notNull(),
+    monthlyOut: doublePrecision("monthly_out").notNull(),
+    runwayDays: doublePrecision("runway_days").notNull(),
+
+    lastCalculated: timestamp("last_calculated").notNull(),
+
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+  },
+  (table) => ({
+    uniqueOnUserIdAndCreatedAt: unique("unique_on_user_id_and_created_at").on(
+      table.userId,
+      table.createdAt
+    ),
+  })
+);
+
+// export const statsRelations = relations(stats, ({ one }) => ({
+// user: one(users, {
+//   fields: [linkedItems.userId],
+//   references: [users.id],
+// }),
+// }));

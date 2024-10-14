@@ -10,7 +10,7 @@ import { useSession } from "~/hooks/useSession";
 
 import { accounts as accountsTable } from "~/lib/db/schema";
 import { getSession } from "~/lib/session";
-import { cn } from "~/lib/utils/common";
+import { cn, getAccountBalance } from "~/lib/utils/common";
 
 export default function Accounts() {
   const session = useSession();
@@ -77,11 +77,7 @@ export default function Accounts() {
                 style: "currency",
                 currency: "GBP", // Hardcoding this, skipping the currency selector dropdown
               }).format(
-                accounts.reduce(
-                  (acc, curr) =>
-                    acc + (curr.currentBalance || curr.availableBalance || 0),
-                  0
-                )
+                accounts.reduce((acc, curr) => acc + getAccountBalance(curr), 0)
               )}
             </div>
           </div>
